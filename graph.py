@@ -2,6 +2,9 @@ import re
 import matplotlib.pyplot as plt
 import os
 import argparse
+import csv
+import psutil  # Importation pour récupérer les infos système
+
 
 def extract_data(file_name, method_name):
     with open(file_name, 'r') as file:
@@ -38,7 +41,33 @@ def extract_data(file_name, method_name):
         return None
 
 
+def save_to_csv(output_file, data):
+    # Vérifier si le fichier existe déjà
+    file_exists = os.path.isfile(output_file)
+
+    # Écrire les données dans le fichier CSV
+    with open(output_file, 'a', newline='') as csvfile:
+        csv_writer = csv.writer(csvfile)
+        
+        # Écrire l'en-tête seulement si le fichier n'existe pas
+        if not file_exists:
+            csv_writer.writerow(['Nombre de colonnes', 'Méthode', 'Temps d\'exécution', 'Coût'])
+
+        # Ajouter les données
+        for row in data:
+            csv_writer.writerow(row)
+
+
+def get_ram_size():
+    """Récupérer la taille de la RAM en Go."""
+    ram_bytes = psutil.virtual_memory().total
+    ram_gb = ram_bytes / (1024**3)  # Conversion en Go
+    return round(ram_gb, 2)  # Arrondi à 2 décimales
+
+
 def main(directory, show_nested):
+    # Liste pour stocker les résultats pour le CSV
+    csv_data = []
 
     # Listes pour stocker les résultats
     columns = []
@@ -61,20 +90,28 @@ def main(directory, show_nested):
                 columns.append(column_count)
                 execution_times_hash_join.append(hash_join_data[1])
                 costs_hash_join.append(hash_join_data[2])
+                csv_data.append([column_count, hash_join_data[0], hash_join_data[1], hash_join_data[2]])
 
             if merge_join_data:
                 execution_times_merge_join.append(merge_join_data[1])
                 costs_merge_join.append(merge_join_data[2])
+                csv_data.append([column_count, merge_join_data[0], merge_join_data[1], merge_join_data[2]])
 
             if show_nested:  # Extraction des données Nested Loop uniquement si nécessaire
                 nested_loop_data = extract_data(f'{directory}/{filename}', 'Nested Loop')
                 if nested_loop_data:
                     execution_times_nested_loop.append(nested_loop_data[1])
                     costs_nested_loop.append(nested_loop_data[2])
+                    csv_data.append([column_count, nested_loop_data[0], nested_loop_data[1], nested_loop_data[2]])
 
-           
+    # Générer le nom du fichier CSV basé sur la RAM
+    ram_size = get_ram_size()
+    output_file = f'results_{ram_size}GB.csv'
 
-            
+    # Sauvegarder les données dans un fichier CSV
+    save_to_csv(output_file, csv_data)
+
+    print(f"Les résultats ont été sauvegardés dans le fichier : {output_file}")
 
     # Vérification des données extraites
     if not columns:
