@@ -8,8 +8,6 @@ sizes=(10 100 1000  5000 10000 )
 
 # Paramètres de connexion PostgreSQL
 DB_NAME="csv_database"
-DB_USER="bddprojet"
-DB_PASSWORD=""
 
 rm -r out
 mkdir -p out
