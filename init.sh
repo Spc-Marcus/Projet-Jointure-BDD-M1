@@ -38,6 +38,7 @@ systemctl start postgresql || { echo "Erreur : Impossible de démarrer le servic
 #echo "Installation de MonetDB terminée."
 
 # Créer un environnement virtuel Python
+apt install -y python3-venv || { echo "Erreur : Impossible d'installer python3-venv."; exit 1; }
 python3 -m venv venv || { echo "Erreur : Impossible de créer l'environnement virtuel."; exit 1; }
 
 # Activer l'environnement virtuel
