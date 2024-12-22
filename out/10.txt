@@ -1,0 +1,34 @@
+SET
+SET
+SET
+                                                     QUERY PLAN                                                      
+---------------------------------------------------------------------------------------------------------------------
+ Hash Join  (cost=29.12..176.18 rows=3612 width=136) (actual time=0.084..0.096 rows=8 loops=1)
+   Hash Cond: (table_10_a.entier = table_10_b.entier)
+   ->  Seq Scan on table_10_a  (cost=0.00..18.50 rows=850 width=68) (actual time=0.017..0.018 rows=10 loops=1)
+   ->  Hash  (cost=18.50..18.50 rows=850 width=68) (actual time=0.034..0.034 rows=10 loops=1)
+         Buckets: 1024  Batches: 1  Memory Usage: 9kB
+         ->  Seq Scan on table_10_b  (cost=0.00..18.50 rows=850 width=68) (actual time=0.010..0.012 rows=10 loops=1)
+ Planning Time: 1.177 ms
+ Execution Time: 0.244 ms
+(8 rows)
+
+SET
+SET
+SET
+                                                     QUERY PLAN                                                      
+---------------------------------------------------------------------------------------------------------------------
+ Merge Join  (cost=119.72..178.15 rows=3612 width=136) (actual time=0.088..0.092 rows=8 loops=1)
+   Merge Cond: (table_10_a.entier = table_10_b.entier)
+   ->  Sort  (cost=59.86..61.98 rows=850 width=68) (actual time=0.052..0.053 rows=10 loops=1)
+         Sort Key: table_10_a.entier
+         Sort Method: quicksort  Memory: 25kB
+         ->  Seq Scan on table_10_a  (cost=0.00..18.50 rows=850 width=68) (actual time=0.004..0.004 rows=10 loops=1)
+   ->  Sort  (cost=59.86..61.98 rows=850 width=68) (actual time=0.023..0.023 rows=12 loops=1)
+         Sort Key: table_10_b.entier
+         Sort Method: quicksort  Memory: 25kB
+         ->  Seq Scan on table_10_b  (cost=0.00..18.50 rows=850 width=68) (actual time=0.008..0.009 rows=10 loops=1)
+ Planning Time: 0.042 ms
+ Execution Time: 0.158 ms
+(12 rows)
+

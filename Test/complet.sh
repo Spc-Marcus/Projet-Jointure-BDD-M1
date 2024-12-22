@@ -11,10 +11,10 @@ DB_NAME="csv_database"
 DB_USER="mafoin"
 DB_PASSWORD=""
 
-rm -r out
+# Crée le dossier 'out' si il n'existe pas déjà
 mkdir -p out
 
-rm -r Base
+# Crée le dossier 'Base' si il n'existe pas déjà
 mkdir -p Base
 
 # Demander à l'utilisateur s'il souhaite afficher les données Nested Loop
@@ -112,6 +112,7 @@ if [[ "$show_info" == "True" ]]; then
     echo "Toutes les tables ont été créées et remplies avec succès dans la base de données $DB_NAME."
 fi
 
+echo"lol"
 
 for size in "${sizes[@]}"
 do
