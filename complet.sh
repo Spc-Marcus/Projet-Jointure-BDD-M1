@@ -4,7 +4,7 @@
 # Variables globales
 
 # Tableau d'entiers
-sizes=(10 100 1000  5000 10000 15000 20000 25000 30000 35000 40000 45000 50000 60000 70000 80000 90000  100000)
+sizes=(10 100 1000  5000 10000 15000 20000 25000)
 
 # Paramètres de connexion PostgreSQL
 DB_NAME="csv_database"
