@@ -45,7 +45,7 @@ python3 -m venv venv || { echo "Erreur : Impossible de créer l'environnement vi
 source venv/bin/activate || { echo "Erreur : Impossible d'activer l'environnement virtuel."; exit 1; }
 
 # Installer les dépendances Python
-pip install numpy matplotlib psutil|| { echo "Erreur : Impossible d'installer les dépendances Python."; exit 1; }
+pip install numpy matplotlib psutil pandas|| { echo "Erreur : Impossible d'installer les dépendances Python."; exit 1; }
 
 # Afficher les informations sur la mémoire RAM disponible
 echo "Informations sur la mémoire RAM :"
