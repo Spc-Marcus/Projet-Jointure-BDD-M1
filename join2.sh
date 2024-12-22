@@ -46,4 +46,4 @@ SQL_COMMANDS+="
 "
 
 # Exécuter les commandes dans PostgreSQL
-psql -U mafoin -d csv_database -c "$SQL_COMMANDS" > out/${TABLE_SUFFIX}.txt
+sudo -u postgres psql -d csv_database -c "$SQL_COMMANDS" > out/${TABLE_SUFFIX}.txt || { echo "Erreur : Impossible d'exécuter les commandes SQL."; exit 1; }

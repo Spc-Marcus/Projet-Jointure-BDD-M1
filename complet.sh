@@ -8,7 +8,7 @@ sizes=(10 100 1000  5000 10000 )
 
 # Paramètres de connexion PostgreSQL
 DB_NAME="csv_database"
-DB_USER="mafoin"
+DB_USER="bddprojet"
 DB_PASSWORD=""
 
 rm -r out
@@ -66,12 +66,11 @@ done
 if [[ "$show_info" == "True" ]]; then
     echo "Configuration de la base de données PostgreSQL..."
 fi
-
 # Suppression de la base de données si elle existe déjà
-psql -U "$DB_USER" -d postgres -c "DROP DATABASE IF EXISTS $DB_NAME;" > /dev/null 2>&1 || { echo "Erreur : Impossible de supprimer la base de données."; exit 1; }
+sudo -u postgres psql -c "DROP DATABASE IF EXISTS $DB_NAME;" > /dev/null 2>&1 || { echo "Erreur : Impossible de supprimer la base de données."; exit 1; }
 
 # Création de la nouvelle base de données
-psql -U "$DB_USER" -d postgres -c "CREATE DATABASE $DB_NAME;" > /dev/null 2>&1 || { echo "Erreur : Impossible de créer la base de données."; exit 1; }
+sudo -u postgres psql -c "CREATE DATABASE $DB_NAME;" > /dev/null 2>&1 || { echo "Erreur : Impossible de créer la base de données."; exit 1; }
 
 if [[ "$show_info" == "True" ]]; then
     echo "Base de données $DB_NAME recréée avec succès."
@@ -86,26 +85,26 @@ do
     if [[ "$show_info" == "True" ]]; then
         echo "Création de la table $TABLE_A..."
     fi
-    psql -U "$DB_USER" -d "$DB_NAME" -c "CREATE TABLE $TABLE_A (Entier INTEGER, val1 TEXT, val2 TEXT);" > /dev/null 2>&1 || { echo "Erreur : Impossible de créer la table $TABLE_A."; exit 1; }
+    sudo -u postgres psql -d "$DB_NAME" -c "CREATE TABLE $TABLE_A (Entier INTEGER, val1 TEXT, val2 TEXT);" > /dev/null 2>&1 || { echo "Erreur : Impossible de créer la table $TABLE_A."; exit 1; }
 
     # Importation des données dans la table A
     if [[ "$show_info" == "True" ]]; then
         echo "Importation des données dans la table $TABLE_A..."
     fi
-    psql -U "$DB_USER" -d "$DB_NAME" -c "\copy $TABLE_A(Entier, val1, val2) FROM 'Base/${size}A.csv' DELIMITER ',' CSV HEADER;" > /dev/null 2>&1 || { echo "Erreur : Impossible d'importer les données dans la table $TABLE_A."; exit 1; }
+    sudo -u postgres psql -d "$DB_NAME" -c "\copy $TABLE_A(Entier, val1, val2) FROM 'Base/${size}A.csv' DELIMITER ',' CSV HEADER;" > /dev/null 2>&1 || { echo "Erreur : Impossible d'importer les données dans la table $TABLE_A."; exit 1; }
 
     # Table B
     TABLE_B="table_${size}_B"
     if [[ "$show_info" == "True" ]]; then
         echo "Création de la table $TABLE_B..."
     fi
-    psql -U "$DB_USER" -d "$DB_NAME" -c "CREATE TABLE $TABLE_B (Entier INTEGER, val1 TEXT, val2 TEXT);" > /dev/null 2>&1 || { echo "Erreur : Impossible de créer la table $TABLE_B."; exit 1; }
+    sudo -u postgres psql -d "$DB_NAME" -c "CREATE TABLE $TABLE_B (Entier INTEGER, val1 TEXT, val2 TEXT);" > /dev/null 2>&1 || { echo "Erreur : Impossible de créer la table $TABLE_B."; exit 1; }
 
     # Importation des données dans la table B
     if [[ "$show_info" == "True" ]]; then
         echo "Importation des données dans la table $TABLE_B..."
     fi
-    psql -U "$DB_USER" -d "$DB_NAME" -c "\copy $TABLE_B(Entier, val1, val2) FROM 'Base/${size}B.csv' DELIMITER ',' CSV HEADER;" > /dev/null 2>&1 || { echo "Erreur : Impossible d'importer les données dans la table $TABLE_B."; exit 1; }
+    sudo -u postgres psql -d "$DB_NAME" -c "\copy $TABLE_B(Entier, val1, val2) FROM 'Base/${size}B.csv' DELIMITER ',' CSV HEADER;" > /dev/null 2>&1 || { echo "Erreur : Impossible d'importer les données dans la table $TABLE_B."; exit 1; }
 done
 
 if [[ "$show_info" == "True" ]]; then
@@ -121,4 +120,6 @@ do
     fi
 done
 
+source venv/bin/activate
 python3 graph.py "out" $show_nested
+deactivate
